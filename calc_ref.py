@@ -12,7 +12,7 @@ from scipy import interpolate
 from PyQt5.QtCore import QObject
 
 def moving_average(a, n=20) :
-    ret = np.cumsum(a, dtype=float)
+    ret = np.nancumsum(a, dtype=float)
     ret[n:] = ret[n:] - ret[:-n]
     return ret[n - 1:] / n
 
@@ -60,13 +60,15 @@ if __name__ == "__main__":
     R=np.zeros(len(TD1[0,:]))
     TD1sumT=np.zeros(len(TD1[0,:]))
     TD2sumT=np.zeros(len(TD1[0,:]))
-    IR=np.zeros(len(TD1[0,:]))
+    #IR=np.zeros(len(TD1[0,:]))
+    #IR=np.nan
     V=np.zeros(len(TD1[0,:]))
     for k in range(len(TD1[0,:])):
         TD1sumT[k]=np.sum(TD1[:,k])
         TD2sumT[k]=np.sum(TD2[:,k])
     TD1meanTZ=moving_average(TD1sumT,20)
     TD2meanTZ=moving_average(TD2sumT,20)
+    IR=np.zeros(len(TD1meanTZ))
     for k in range(len(TD1meanTZ)):
         noise=np.mean(TD3[:,k])
         if (np.max(TD1meanTZ[k])/noise>10) and ((TD2meanTZ[k])/noise>10):
